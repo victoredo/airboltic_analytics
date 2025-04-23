@@ -15,7 +15,7 @@ erDiagram
     dim_customers {
         string customer_id PK
         string name
-        int customer_group_id FK
+        string customer_group_id FK
         string email
         
     }
@@ -51,9 +51,9 @@ erDiagram
     }
 
     fact_orders {
-        int order_id PK
-        int customer_id FK
-        int trip_id FK
+        string order_id PK
+        string customer_id FK
+        string trip_id FK
         double price
         string seat_no
         string order_status
