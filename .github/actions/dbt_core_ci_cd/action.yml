@@ -1,0 +1,97 @@
+name: DBT CI/CD
+description: Reusable dbt CI/CD job
+
+inputs:
+  s3-artifacts-dir:
+    description: S3 manifest file path
+    required: true
+
+  s3-region:
+    description: S3 region
+    required: true
+
+  role-to-assume:
+    description: role to assume to get access to S3 doc bucket
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Get dbt prod manifest.json
+      shell: bash
+      run: |
+        mkdir -p target_prod
+        aws s3 cp \
+          ${{ inputs.s3-artifacts-dir }}/manifest.json \
+          target_prod/manifest.json \
+          --region ${{ inputs.s3-region }}
+
+    - name: Setup dbt
+      shell: bash
+      run: |
+        poetry run dbt debug
+        poetry run dbt deps
+
+    - name: Upload artifacts to s3
+      if: env.DBT_TARGET == 'prod'
+      shell: bash
+      run: |
+        poetry run dbt compile
+        aws s3 cp \
+          target/manifest.json \
+          ${{ inputs.s3-artifacts-dir }}/manifest.json \
+          --region ${{ inputs.s3-region }}
+        poetry run dbt docs generate --static
+        aws s3 cp \
+          target/static_index.html \
+          ${{ inputs.s3-artifacts-dir }}/dbt_documentation.html \
+          --region ${{ inputs.s3-region }}
+
+    - name: Build all dbt
+      shell: bash
+      run: |
+        if [[ "${{ env.DBT_TARGET }}" == "prod" ]]; then
+          poetry run dbt clean
+          poetry run dbt deps
+          poetry run dbt build  \
+            --select state:modified+ \
+            --defer \
+            --state target_prod \
+            --full-refresh
+        else
+          poetry run dbt build  \
+            --select state:modified+ \
+            --defer \
+            --state target_prod \
+            --indirect-selection=buildable \
+            --fail-fast
+        fi
+
+
+    - name: Run project evaluator
+      shell: bash
+      if: env.DBT_TARGET != 'prod'
+      env:
+        ENABLE_DBT_PROJECT_EVALUATOR: true
+      run: |
+        if [ $(poetry run dbt ls \
+              --select state:modified \
+              --exclude dbt_project_evaluator \
+              --state target_prod \
+              --output json \
+              --log-level error 2>/dev/null | { jq -c . || echo "[]" ; } | wc -l) -gt 0 ]; then
+          echo "Objects have been modified."
+          poetry run dbt seed --select dbt_project_evaluator_exceptions
+          poetry run dbt build --select "dbt_project_evaluator"
+        else
+          echo "No modifid objects found not running evaluator."
+        fi
+
+    - name: Configure AWS credentials - s3
+      if: env.DBT_TARGET == 'prod' && always()
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-region: ${{ env.AWS_CREDENTIALS_REGION }}
+        role-to-assume: ${{ inputs.role-to-assume  }}
+        role-duration-seconds: ${{ env.AWS_CREDENTIALS_ROLE_DURATION }}
+        role-session-name: ${{ env.AWS_CREDENTIALS_ROLE_SESSION_NAME }}

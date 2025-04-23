@@ -1,0 +1,10 @@
+version: 2
+
+models:
+  - name: stg_air_boltic_aeroplane_models
+    description: a JSON data on information about aeroplane models(seat,engine type, model_id) 
+    columns:
+      - name: json_data
+        description: Event JSON
+        data_tests:
+          - not_null

@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: dim_aeroplanes
+    description: information about individual aircrafts that operates 
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name:  airplane_id
+        description: aeroplane id
+        data_type: string
+        data_tests:
+          - not_null
+          - unique
+      
+      - name: model_id
+        description:  aeroplane manufacturer name
+        data_type: string
+        data_tests:
+          - not_null
+
+      - name:  manufacturer
+        description:  aeroplane manufacturer name
+        data_type: string
+        data_tests:
+          - not_null

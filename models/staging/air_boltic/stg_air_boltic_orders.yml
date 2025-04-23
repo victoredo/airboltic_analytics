@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: stg_air_boltic_orders
+    description: transaction information of customers purchasing seats on plane trips
+    columns:
+      - name: order_id
+        data_tests:
+          - not_null
+          - unique
+
+      - name: price_eur
+        description: order price
+        data_test:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">=0"
+      
+      - name: order_status
+        data_tests:
+          - not_null
+          - accepted_values:
+              values:
+                - Finished
+                - Booked
+                - Cancelled

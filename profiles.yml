@@ -1,0 +1,31 @@
+databricks:
+  target: "{{ env_var('DBT_TARGET') }}"
+  meta:
+    base: &base
+      type: databricks
+      auth_type: oauth
+      client_id: "{{ env_var('DBX_ID_APPLICATION_ID') }}"
+      client_secret: "{{ env_var('DBX_SECRET') }}"
+      client_session_keep_alive: False
+      threads: 8
+
+  outputs:
+    dev:
+      <<: *base
+      catalog: bolt_silver_staging
+      schema: "{{ env_var('DEV_SCHEMA') }}"
+      host: bolt-platform-staging.cloud.databricks.com
+      http_path: /sql/1.0/warehouses/bolt
+
+    prod: &prod_service_account
+      <<: *base
+      catalog: bolt_silver_production
+      schema: analytics
+      host: bolt-platform-production.cloud.databricks.com
+      http_path: /sql/1.0/warehouses/bolt
+
+elementary:
+  outputs:
+    prod:
+      <<: *prod_service_account
+      schema: analytics_elementary

@@ -1,0 +1,13 @@
+version: 2
+
+models:
+  - name: stg_air_boltic_trips
+    description: information(orignal cities, destination cites, timestamp) on aeroplane rides 
+    data_tests:
+      - dbt_utils.expression_is_true:
+          expression: "end_timestamp > start_timestamp"
+    columns:
+      - name: trip_id
+        data_tests:
+          - not_null
+          - unique

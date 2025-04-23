@@ -1,0 +1,10 @@
+version: 2
+
+models:
+  - name: stg_air_boltic_customers
+    description: customers sign up details 
+    columns:
+      - name: customer_id
+        data_tests:
+          - not_null
+          - unique

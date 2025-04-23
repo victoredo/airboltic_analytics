@@ -1,0 +1,27 @@
+version: 2
+
+sources:
+  - name: air_boltic
+    description: A source for air boltic customers and airplanes data
+    catalog: gold_production
+    schema: events
+    tables:
+      - name: customer
+        description: customers sign up details 
+
+      - name: customer_group
+        descrption: customers group sign up details 
+
+      - name: aeroplane
+        description: information about individual aircrafts that operates 
+
+      - name: trip
+        description: information(orignal cities, destination cites, timestamp) on aeroplane rides 
+      
+      - name: order
+        description: transsaction information of customers purchasing seats on plane trips
+     
+      - name: aeroplane_model_json
+        description: a JSON data on information about aeroplane models(seat,engine type, model_id) 
+
+ 

@@ -1,0 +1,37 @@
+version: 2
+
+models:
+  - name: dim_customer_groups
+    description: customers group sign up details 
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: customer_group_id
+        description: customer group id
+        data_type: string
+        data_tests:
+          - not_null
+          - unique
+      
+      - name: type
+        description: customer group type
+        data_type: string
+        data_tests:
+          - not_null
+
+      - name: name
+        description: customer group name
+        data_type: string
+        data_tests:
+          - not_null
+          
+      - name: registry_number
+        description: customer group registry number
+        data_type: string
+        data_tests:
+          - not_null:
+              # TODO - confirm with stakeholder why private group does not have registry number 
+              where: "type !='Private Group'"
+
+          

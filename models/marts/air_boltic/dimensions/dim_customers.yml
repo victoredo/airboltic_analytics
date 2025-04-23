@@ -1,0 +1,31 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: customers sign up details 
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: customer_id
+        description: customer  id
+        data_type: string
+        data_tests:
+          - not_null
+          - unique
+      
+      - name: customer_group_id
+        description: customer group id
+        data_type: string
+        data_tests:
+          - not_null
+          
+      - name: name
+        description: customer name
+        data_type: string
+        data_tests:
+          - not_null
+           
+      - name: email
+        description: customer email
+        data_type: string

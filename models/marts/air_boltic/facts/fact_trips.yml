@@ -1,0 +1,46 @@
+version: 2
+
+models:
+  - name: fact_trips
+    description: information(orignal cities, destination cites, timestamp) on aeroplane rides 
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: trip_id
+        description: trip id
+        data_type: string
+        data_tests:
+          - not_null
+          - unique
+      
+      - name: aeroplane_id
+        description: aeroplane id
+        data_type: string
+        data_tests:
+          - not_null
+          
+      - name: origin_city
+        description: starting city of trips
+        data_type: string
+        data_tests:
+          - not_null
+           
+      - name: destination_city
+        description: destination city of trips
+        data_type: string
+        data_tests:
+          - not_null
+      
+      - name: start_timestamp
+        description: start time of trips
+        data_type: timestamp
+        data_tests:
+          - not_null
+      
+      - name: end_timestamp
+        description: end time of trips
+        data_type: float
+        data_test:
+          - not_null
+        

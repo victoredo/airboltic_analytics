@@ -1,0 +1,52 @@
+version: 2
+
+models:
+  - name: fact_orders
+    description: transaction information of customers purchasing seats on plane trips
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: order_id
+        description: order id
+        data_type: string
+        data_tests:
+          - not_null
+          - unique
+      
+      - name: customer_id
+        description: customer id
+        data_type: string
+        data_tests:
+          - not_null
+          
+      - name: trip_id
+        description: trip id
+        data_type: string
+        data_tests:
+          - not_null
+           
+      - name: seat_no
+        description: customer seat no
+        data_type: string
+        data_tests:
+          - not_null
+      
+      - name: order_status
+        description: order status
+        data_type: string
+        data_tests:
+          - not_null
+          - accepted_values:
+              values:
+                - Finished
+                - Booked
+                - Cancelled
+
+      - name: price_eur
+        description: customer seat no
+        data_type: float
+        data_test:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">=0"

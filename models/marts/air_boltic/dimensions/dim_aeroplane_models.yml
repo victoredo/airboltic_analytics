@@ -1,0 +1,45 @@
+version: 2
+
+models:
+  - name: dim_aeroplane_models
+    description: transformed information about aeroplane models(seat,engine type, model_id) 
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name:  model_id
+        description: aeroplane model id
+        data_type: string
+        data_tests:
+          - not_null
+          - unique
+      
+      - name: manufacturer
+        description: aeroplane manufacturer name
+        data_type: string
+        data_tests:
+          - not_null
+
+      - name: engine_type
+        description: aeroplane engine type
+        data_type: string
+        data_tests:
+          - not_null
+
+      - name: max_seats
+        description: max seats in aeroplane
+        data_type: int
+        data_tests:
+          - not_null
+      
+      - name: max_weight
+        description: max weight for the aeroplane
+        data_type: int
+        data_tests:
+          - not_null
+      
+      - name: max_distance
+        description: max distance for the aeroplane
+        data_type: int
+        data_tests:
+          - not_null
